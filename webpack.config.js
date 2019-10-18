@@ -1,20 +1,30 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack')
+
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+
+
+
 
 const BUILD_MODE = {
 	dev: 'dev',
 	prod: 'prod',
 }
 
-
 module.exports = function(env){
-	const BUILD_ENV = env.BUILD_ENV || BUILD_MODE.dev;
+
+	//ifdef-loader specific
+	const preprocessor = {
+		//"ifdef-verbose": true, //for verbose output
+		//"ifdef-triple-slash":true, //add this to use double slash comment instead of triple slash
+		BUILD_ENV : env ? env.BUILD_ENV || BUILD_MODE.dev : BUILD_MODE.dev,
+	}
+	const ifdef_query = JSON.stringify(preprocessor);
 
 	console.log("Custom:")
-	console.log("[CONFIG]::[webpack.config.js]::[BULD_ENV]::Mode => ", BUILD_ENV);
+	console.log("[CONFIG]::[webpack.config.js]::[BULD_ENV]::Mode => ", preprocessor.BUILD_ENV);
 	console.log()
 
 	return {
@@ -29,12 +39,18 @@ module.exports = function(env){
 			new HtmlWebpackPlugin({
 				title: "Output Management",
 			}),
+			//RELEVANT NormalModuleReplacementPlugin -> This is where we define 'what to replace' and 'with what'
 			new webpack.NormalModuleReplacementPlugin(
+				//filter import/require sources with this regexp
 				/(.*)PLATFORM_DEPENDENT(\.*)/,
+				//apply this callback on them
 				function(resource){
-					resource.request = resource.request.replace(/PLATFORM_DEPENDENT/, `${BUILD_ENV}`);
+					resource.request = resource.request.replace(
+						/*what*//PLATFORM_DEPENDENT/,
+						/*with*/`${preprocessor.BUILD_ENV}`);
 				}
 			),
+			//For NormalModuleReplacementPlugin Evaluation
 			//new BundleAnalyzerPlugin(),
 		],
 		output: {
@@ -52,6 +68,14 @@ module.exports = function(env){
 					test: /\.(png|jpg|svg|gif)$/,
 					use: [
 						'file-loader',
+					],
+				},
+				//RELEVANT IFDEFLOADER -> this is how we feed the ifdef-loader the options (ifdef_query) (in stringform)
+				{
+					test: /\.js$/,
+					exclude: /node_modules/,
+					use: [
+						`ifdef-loader?${ifdef_query}`,
 					],
 				},
 			],
