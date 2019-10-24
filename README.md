@@ -1,12 +1,12 @@
 # PrototypeConditionalBuildOnWebpack
-Simple setup for conditional build (1 codebase -> n platforms) with webpack
+Simple setup for conditional build (1 codebase -> n platforms) with webpack, aiming to eliminate platformspecific dead code in order to reduce resulting bundle-sizes.
 
 The __webpack-config.js__ has targets for 'dev', 'prod' and 'build' to emulate different targets.
 e.g.: 'npm run dev' or 'npm run prod' or 'npm run serveD' for dev-server in dev mode 'npm run serveP' (see package.json).
 This will result in building different contexts (build defaults to dev).
 There will be different console outputs and a different morty with each target.
 
-The #ifdef-loader plugin can work splitting the codebase, however more reliable methods are NormalModuleReplacementPlugin, as well as webpack's define plugin
+The [#ifdef-loader plugin](https://github.com/nippur72/ifdef-loader) can work splitting the codebase, however when working with vue components i found the [NormalModuleReplacementPlugin](https://webpack.js.org/plugins/normal-module-replacement-plugin/), as well as [webpack's define plugin](https://webpack.js.org/plugins/define-plugin/) to work more reliably and out of the box. 
 
 in src/ there are logger/ dogger/ and frogger/ directories which all try to implement conditional builds each using one of the technologies from above.
 **Note**, that webpack's define plugin should be preferred, since it doesn't break whatever IDE you are using.
