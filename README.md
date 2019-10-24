@@ -10,9 +10,11 @@ The #ifdef-loader plugin can work splitting the codebase, however more reliable 
 
 in src/ there are logger/ dogger/ and frogger/ directories which all try to implement conditional builds each using one of the technologies from above.
 **Note**, that webpack's define plugin should be preferred, since it doesn't break whatever IDE you are using.
-**However**, to enable webpacks treeshaking (dead code elimination) you also need to tell the package.json file, that either your applications modules are sideEffect free or [list the files that have sideEffects](https://webpack.js.org/guides/tree-shaking/#minify-the-output).
+**However**, to enable webpacks treeshaking (dead code elimination) you also need to tell the package.json file, that either your applications modules are sideEffect free or [list the files that have sideEffects](https://webpack.js.org/guides/tree-shaking).
 **Also**, in order to not break your IDE (static code analyses etc.) you need to globally declare any define you have made, for example in a 'global.d.ts' file.
 
+in src/ there is a LoginScreen.vue that is supposed to react differently to a dev/prod build. 
+In my tests I concluded, that only with NormalModuleReplacement, as well as webpack's define plugin I could achieve not bundling unneccessary vue-components into the final build.
 
 If you have troubles with dependencies try executing the 'npm_installs.sh' so the neccessary npm packages are downloaded for you.
 
