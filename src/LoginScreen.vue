@@ -1,7 +1,9 @@
 <template>
     <div id="login-screen">
         <h1>Login</h1>
-        <p>{{message}}</p>
+        <div><span>Name: <input v-model="message"></span></div>
+        <div v-if="message"><span>Welcome: {{message}}</span></div>
+        <div style="padding-top:30px;">Target-Platform:</div>
         <component :is="platformDependent"/>
     </div>
 </template>
@@ -13,7 +15,7 @@
 
     export default {
         name: "login-screen",
-        data: function(){return {message:"helluuuu", platformDependent:"devOrProd"}},
+        data: function(){return {message:"", platformDependent:"devOrProd"}},
         props: {},
         methods: {},
         components: {
