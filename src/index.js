@@ -1,11 +1,9 @@
 import _ from 'lodash'
 import Vue from 'vue';
-import App from './App.vue';
 import LoginScreen from './LoginScreen.vue'
 
 new Vue({
 	el: '#app',
-	//render: h => h(LoginScreen),
 	components: {
 	    'login-screen': LoginScreen
 	},
@@ -13,19 +11,14 @@ new Vue({
 });
 
 //RELEVANT NormalModuleReplacementPlugin -> plugin scans ALL imports/requires -> also applies to e.g. images!
+//NOTE that this introduces import paths, that the IDE or other static code analysis tools do NOT recognize or know how
+//to handle -> the logger/Logger.i.ts demonstrates, how this can be 'solved' through an interface BUT it is NOT and without
+//a proper IDE plugin can't be a perfect solution
 import './welcome-PLATFORM_DEPENDENT.js'
 import Icon from './morty-PLATFORM_DEPENDENT.jpg' //<- this is neat!
 
-function component(){
+document.body.appendChild((() => {
 	const element = document.createElement('div');
-	const btn = document.createElement('button');
-
-	element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-
-	btn.innerHTML = "Click me and check the console!";
-	btn.onclick = () => { console.log('Button was clicked!')};
-
-	element.appendChild(btn);
 
 	//include morty img
 	const img = new Image();
@@ -33,6 +26,8 @@ function component(){
 	element.appendChild(img);
 
 	//RELEVANT IFDEF -> this is how its used in our code:
+    //NOTE that this doesn't prevent the IDE/static code analyzers to see e.g. multiple variable definitions
+	//in the end this is limited in its usefulness as long as we don't want to break our IDE
 
 	/// #if BUILD_ENV === 'dev'
 	console.log("ifdef says: dev");
@@ -43,6 +38,5 @@ function component(){
 	/// #endif
 
 	return element;
-}
+})())
 
-document.body.appendChild(component());
