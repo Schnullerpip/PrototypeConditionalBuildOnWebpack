@@ -15,7 +15,6 @@ const BUILD_MODE = {
 module.exports = function(env){
 
 	if(!env) env = {BUILD_ENV:BUILD_MODE.dev}
-
 	//ifdef-loader specific
 	const preprocessor = {
 		//"ifdef-verbose": true, //for verbose output
